@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <style type="text/css">
+            canvas { background-color: #000; }
+            *:focus { outline-width: 0; }
+        </style>
+        <script type="text/javascript" src="snake.js"></script>
+        <script type="text/javascript" src="events.js"></script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="800" height="600">
+            Your browser does not support the canvas element.
+        </canvas>
+        <button onclick="initializeVideoArray()">init video array</button>
+        <label for="x">x:</label><input type="text" id="x" size="5" />
+        <label for="y">y:</label><input type="text" id="y" size="5" />
+        <label for="length">length:</label><input type="text" id="length" size="5" />
+        <label for="speed">speed:</label><input type="text" id="speed" size="5" />
+        <label for="baddies">baddies:</label><input type="text" id="baddies" size="5" />
+    </body>
+</html>
