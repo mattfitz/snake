@@ -135,11 +135,13 @@ function handleKeyUp(event) {
 }
 
 function handleTouchStart(event) {
+    event.preventDefault();
     _START_X = event.touches[0].clientX;
     _START_Y = event.touches[0].clientY;
 }
 
 function handleTouchEnd(event) {
+    event.preventDefault();
     const endX = event.changedTouches[0].clientX;
     const endY = event.changedTouches[0].clientY;
   
