@@ -5,7 +5,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 
 var _clockInterval, _buffer = [], _canvas, _ctx, _x = [], _y = [], _videoInterval, _videoArray = [];
 var _CURPOS_X=0, _CURPOS_Y=0, _BLOCK_SIZE_X=10, _BLOCK_SIZE_Y=10, _CANVAS_WIDTH=800, _CANVAS_HEIGHT=600;
-var _DIRECTION_X, _DIRECTION_Y, _VELOCITY=0, _LENGTH=1, _BLOCK_ARRAY = [], _TARGET_BLOCK_X, _TARGET_BLOCK_Y;
+var _DIRECTION_X, _DIRECTION_Y, _VELOCITY=0, _LENGTH=1, _BLOCK_ARRAY = [], _TARGET_BLOCK_X, _TARGET_BLOCK_Y, _START_X, _START_Y;
 var _INTERVAL_RATE=100;
 var _BAD_GUYS_X = [], _BAD_GUYS_Y = [], _BAD_GUYS_VELOCITY = [], _BAD_GUYS_DIRECTION_X = [], _BAD_GUYS_DIRECTION_Y = [], _BAD_GUYS_SIZE = [];
 
@@ -17,6 +17,10 @@ function DOMLoaded()
     
     document.addEventListener("keydown", (event) => { handleKeyDown(event) });
     document.addEventListener("keyup", (event) => { handleKeyUp(event) });
+
+    document.getElementById("swipePad").addEventListener("touchstart", (event) => { handleTouchStart(event) });
+    document.getElementById("swipePad").addEventListener("touchend", (event) => { handleTouchEnd(event) });
+
     _CURPOS_X = 180;
     _CURPOS_Y = 180;
     _BLOCK_ARRAY.push([180,180]);

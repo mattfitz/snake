@@ -133,3 +133,41 @@ function handleKeyUp(event) {
             }
             */
 }
+
+function handleTouchStart(event) {
+    _START_X = event.touches[0].clientX;
+    _START_Y = event.touches[0].clientY;
+}
+
+function handleTouchEnd(event) {
+    const endX = event.changedTouches[0].clientX;
+    const endY = event.changedTouches[0].clientY;
+  
+    const deltaX = endX - _START_X;
+    const deltaY = endY - _START_Y;
+    if (Math.abs(deltaX) > Math.abs(deltaY)) {
+        if (deltaX > 0) {
+          // Swipe right
+          _DIRECTION_X=1;
+          _DIRECTION_Y=0;
+          _VELOCITY=_BLOCK_SIZE_X;
+        } else {
+          // Swipe left
+          _DIRECTION_X=-1;
+          _DIRECTION_Y=0;
+          _VELOCITY=_BLOCK_SIZE_X;
+        }
+    } else {
+        if (deltaY > 0) {
+          // Swipe down
+          _DIRECTION_Y=1;
+          _DIRECTION_X=0;
+          _VELOCITY=_BLOCK_SIZE_Y;
+        } else {
+          // Swipe up
+          _DIRECTION_Y=-1;
+          _DIRECTION_X=0;
+          _VELOCITY=_BLOCK_SIZE_Y;
+        }
+    }
+}
