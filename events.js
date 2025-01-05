@@ -1,5 +1,6 @@
 
 function handleKeyDown(event) {
+    event.preventDefault();
     //console.log(event.key.toLowerCase());
     switch(event.key.toLowerCase())
     {
@@ -84,6 +85,7 @@ function handleKeyDown(event) {
 }
 
 function handleKeyUp(event) {
+    //event.preventDefault();
     //var evtKey = event.key.toLowerCase();
     switch(event.key.toLowerCase())
     {

@@ -1,7 +1,13 @@
 <html>
     <head>
         <style type="text/css">
-            canvas { background-color: #000; }
+            canvas { background-color: #000; width: 400px; height: 300px; }
+            @media screen and (min-width: 360px) {
+                canvas {
+                    width: 800px;
+                    height: 600px;
+                }
+            }
             *:focus { outline-width: 0; }
             #swipePad { width: 100%; height: 100%; background-color: #ccc; }
         </style>
@@ -9,7 +15,7 @@
         <script type="text/javascript" src="events.js"></script>
     </head>
     <body>
-        <canvas id="myCanvas" width="800" height="600">
+        <canvas id="myCanvas">
             Your browser does not support the canvas element.
         </canvas>
         <button onclick="initializeVideoArray()">init video array</button>
