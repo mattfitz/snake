@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', (event) => {
 var _clockInterval, _buffer = [], _canvas, _ctx, _x = [], _y = [], _videoInterval, _videoArray = [];
 var _CURPOS_X=0, _CURPOS_Y=0, _BLOCK_SIZE_X=10, _BLOCK_SIZE_Y=10, _CANVAS_WIDTH=800, _CANVAS_HEIGHT=600;
 var _DIRECTION_X, _DIRECTION_Y, _VELOCITY=0, _LENGTH=1, _BLOCK_ARRAY = [], _TARGET_BLOCK_X, _TARGET_BLOCK_Y, _START_X, _START_Y;
+var _BAD_GUY_VALUES = [];
 var _INTERVAL_RATE=100;
 var _BAD_GUYS_X = [], _BAD_GUYS_Y = [], _BAD_GUYS_VELOCITY = [], _BAD_GUYS_DIRECTION_X = [], _BAD_GUYS_DIRECTION_Y = [], _BAD_GUYS_SIZE = [];
 
@@ -180,8 +181,28 @@ function moveCursor()
         _ctx.clearRect(deleteMe[0],deleteMe[1],_BLOCK_SIZE_X,_BLOCK_SIZE_Y);
     }
     //_ctx.clearRect(_CURPOS_X,_CURPOS_Y,_BLOCK_SIZE_X,_BLOCK_SIZE_Y);
-    _CURPOS_X+=(_VELOCITY*_DIRECTION_X);
-    _CURPOS_Y+=(_VELOCITY*_DIRECTION_Y);
+    
+    // if direction is x then compare current and next x pos to baddie array for baddies where y is within y range
+    const nextX = _CURPOS_X+(_VELOCITY*_DIRECTION_X);
+    const nextY = _CURPOS_Y+(_VELOCITY*_DIRECTION_Y);
+    // console.log(_DIRECTION_X,_DIRECTION_Y,_CURPOS_X,_CURPOS_Y,nextX,nextY,_BAD_GUY_VALUES);
+    if (_DIRECTION_X === 1) {
+        const inPathBaddies = _BAD_GUY_VALUES.filter(b => _CURPOS_Y <= b[1] && _CURPOS_Y+_BLOCK_SIZE_Y > b[1] || b[1] <= _CURPOS_Y && _CURPOS_Y <= b[1]+b[2]);
+        if (inPathBaddies.filter(b => _CURPOS_X+_BLOCK_SIZE_X <= b[0] && nextX+_BLOCK_SIZE_X >= b[0]).length > 0) clearInterval(_clockInterval);
+    } else if (_DIRECTION_X === -1) {
+        const inPathBaddies = _BAD_GUY_VALUES.filter(b => _CURPOS_Y <= b[1] && _CURPOS_Y+_BLOCK_SIZE_Y > b[1] || b[1] <= _CURPOS_Y && _CURPOS_Y <= b[1]+b[2]);
+        if (inPathBaddies.filter(b => _CURPOS_X >= b[0]+b[2] && nextX < b[0]+b[2]).length > 0) clearInterval(_clockInterval);
+
+    } else if (_DIRECTION_Y === 1) {
+        const inPathBaddies = _BAD_GUY_VALUES.filter(b =>_CURPOS_X <= b[0] && b[0] < _CURPOS_X+_BLOCK_SIZE_X || b[0] <= _CURPOS_X && _CURPOS_X <= b[0]+b[2]);
+        if (inPathBaddies.filter(b => _CURPOS_Y+_BLOCK_SIZE_Y <= b[1] && nextY+_BLOCK_SIZE_Y >= b[1]).length > 0) clearInterval(_clockInterval);
+    } else if (_DIRECTION_Y === -1) {
+        const inPathBaddies = _BAD_GUY_VALUES.filter(b =>_CURPOS_X <= b[0] && b[0] < _CURPOS_X+_BLOCK_SIZE_X || b[0] <= _CURPOS_X && _CURPOS_X <= b[0]+b[2]);
+        if (inPathBaddies.filter(b => _CURPOS_Y >= b[1]+b[2] && nextY < b[1]+b[2]).length > 0) clearInterval(_clockInterval);
+    }
+    _CURPOS_X=nextX;
+    _CURPOS_Y=nextY;    
+
     if (_CURPOS_X<0 || _CURPOS_X+_BLOCK_SIZE_X>_CANVAS_WIDTH) clearInterval(_clockInterval);
     if (_CURPOS_Y<0 || _CURPOS_Y+_BLOCK_SIZE_Y>_CANVAS_HEIGHT) clearInterval(_clockInterval);
     if (_BLOCK_ARRAY.findIndex(x=>x[0]===_CURPOS_X&&x[1]===_CURPOS_Y)>0) clearInterval(_clockInterval);
@@ -212,8 +233,23 @@ function moveCursor()
         document.getElementById("baddies").value=_BAD_GUYS_X.length;
     }
 
+    function addStaticBadGuy(x, y, s)
+    {
+        addBadGuy(x, y, 0, 0, 0, s);
+        _BAD_GUY_VALUES.push([x,y,s]);
+
+        // create arrays for each set of angles
+        const thetaA = Math.atan(x/y);
+        const thetaB = Math.atan(x/(Math.abs(y-_CANVAS_HEIGHT)));
+        /*
+            bad guy tracking
+             
+        */
+    }
+
     function addBadGuy(x, y, v, d_x, d_y, s)
     {
+        _BAD_GUY_VALUES.push([x,y,s]);
         _BAD_GUYS_X.push(x);
         _BAD_GUYS_Y.push(y);
         _BAD_GUYS_VELOCITY.push(v);
