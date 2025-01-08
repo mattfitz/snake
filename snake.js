@@ -161,12 +161,6 @@ function moveBadGuys()
 
 function moveCursor()
 {
-    if (_BLOCK_ARRAY.length<_LENGTH) _BLOCK_ARRAY.push([_CURPOS_X,_CURPOS_Y]);
-    else if (_BLOCK_ARRAY.length>=_LENGTH) {
-        const deleteMe = _BLOCK_ARRAY.shift();
-        _ctx.clearRect(deleteMe[0],deleteMe[1],_BLOCK_SIZE_X,_BLOCK_SIZE_Y);
-    }
-    
     const nextX = _CURPOS_X+(_VELOCITY*_DIRECTION_X);
     const nextY = _CURPOS_Y+(_VELOCITY*_DIRECTION_Y);
     if (_DIRECTION_X === 1) {
@@ -189,15 +183,20 @@ function moveCursor()
     if (_CURPOS_X<0 || _CURPOS_X+_BLOCK_SIZE_X>_CANVAS_WIDTH) clearInterval(_clockInterval);
     if (_CURPOS_Y<0 || _CURPOS_Y+_BLOCK_SIZE_Y>_CANVAS_HEIGHT) clearInterval(_clockInterval);
     if (_BLOCK_ARRAY.findIndex(x=>x[0]===_CURPOS_X&&x[1]===_CURPOS_Y)>0) clearInterval(_clockInterval);
+
+    if (_BLOCK_ARRAY.length<_LENGTH) _BLOCK_ARRAY.push([_CURPOS_X,_CURPOS_Y]);
+    else if (_BLOCK_ARRAY.length>=_LENGTH) {
+        const deleteMe = _BLOCK_ARRAY.shift();
+        _ctx.clearRect(deleteMe[0],deleteMe[1],_BLOCK_SIZE_X,_BLOCK_SIZE_Y);
+    }
+    
     _ctx.fillStyle = "#0f0";
     _ctx.fillRect(_CURPOS_X,_CURPOS_Y,_BLOCK_SIZE_X,_BLOCK_SIZE_Y);
     _BLOCK_ARRAY.push([_CURPOS_X,_CURPOS_Y]);
     if (_CURPOS_X===_TARGET_BLOCK_X && _CURPOS_Y===_TARGET_BLOCK_Y) {
         _LENGTH++;
-        
-        _TARGET_BLOCK_X=Math.floor(Math.random()*((_CANVAS_WIDTH-_BLOCK_SIZE_X)/_BLOCK_SIZE_X))*_BLOCK_SIZE_X;
+        [_TARGET_BLOCK_X, _TARGET_BLOCK_Y] = calculateNewTarget();
         console.log("new targetx: ",_TARGET_BLOCK_X);
-        _TARGET_BLOCK_Y=Math.floor(Math.random()*((_CANVAS_HEIGHT-_BLOCK_SIZE_Y)/_BLOCK_SIZE_Y))*_BLOCK_SIZE_Y;
         console.log("new targety: ",_TARGET_BLOCK_Y);
         _ctx.fillStyle = "#ff0";
         _ctx.fillRect(_TARGET_BLOCK_X,_TARGET_BLOCK_Y,_BLOCK_SIZE_X,_BLOCK_SIZE_Y);
@@ -214,6 +213,17 @@ function moveCursor()
                     Math.floor(Math.random()*2),
                     Math.floor(Math.random()*10)+5);
         document.getElementById("baddies").value=_BAD_GUYS_X.length;
+    }
+
+    function calculateNewTarget() {
+        let targetX = Math.floor(Math.random()*((_CANVAS_WIDTH-_BLOCK_SIZE_X)/_BLOCK_SIZE_X))*_BLOCK_SIZE_X;
+        let targetY = Math.floor(Math.random()*((_CANVAS_HEIGHT-_BLOCK_SIZE_Y)/_BLOCK_SIZE_Y))*_BLOCK_SIZE_Y;
+        if (_BAD_GUYS_X.find(x => x === targetX)) {
+            if (_BAD_GUYS_Y.find(y => y === targetY)) {
+                return calculateNewTarget();
+            }
+        }
+        return [targetX, targetY];
     }
 
     function addStaticBadGuy(x, y, s)
